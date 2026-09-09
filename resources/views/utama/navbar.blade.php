@@ -2,7 +2,7 @@
     <a href="{{ url('/') }}" class="text-[22px] font-black italic leading-none tracking-[-0.18em]">FTH</a>
 
     <nav class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-[9px] font-semibold uppercase tracking-[0.08em] md:flex">
-        <a href="{{ url('/') }}#new-arrivals" class="transition hover:text-neutral-500">New Arrivals</a>
+        <a href="{{ url('/new') }}" class="transition hover:text-neutral-500">New Arrivals</a>
         <a href="{{ url('/') }}#collections" class="transition hover:text-neutral-500">Collections <span class="ml-1 text-[8px]">⌄</span></a>
         <a href="{{ url('/') }}#trending" class="transition hover:text-neutral-500">Trending</a>
         <a href="{{ url('/') }}#filters" class="transition hover:text-neutral-500">Filters</a>
