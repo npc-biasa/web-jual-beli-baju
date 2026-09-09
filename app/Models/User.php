@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -12,6 +13,18 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $primaryKey = 'id_user';
+
+    public function pesanans(): HasMany
+    {
+        return $this->hasMany(pesanan::class, 'id_user', 'id_user');
+    }
+
+    public function keranjangs(): HasMany
+    {
+        return $this->hasMany(keranjang::class, 'id_user', 'id_user');
+    }
 
     /**
      * The attributes that are mass assignable.

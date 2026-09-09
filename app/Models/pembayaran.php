@@ -10,6 +10,11 @@ class pembayaran extends Model
 
     protected $primaryKey = 'id_pembayaran';
 
+    public function pesanans(): BelongsTo
+    {
+        return $this->belongsTo(pesanans::class, 'id_pesanan', 'id_pesanan');
+    }
+
     protected $fillable = [
         'id_pembayaran',
         'id_pesanan',

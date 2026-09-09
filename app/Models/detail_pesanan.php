@@ -10,6 +10,16 @@ class detail_pesanan extends Model
 
     protected $primaryKey = 'id_detail';
 
+    public function baju(): BelongsTo
+    {
+        return $this->belongsTo(baju::class, 'id_baju', 'id_baju');
+    }
+
+    public function pesanans(): BelongsTo
+    {
+        return $this->belongsTo(pesanan::class, 'id_pesanan', 'id_pesanan');
+    }
+
     protected $fillable = [
         'id_detail',
         'id_pesanan',
