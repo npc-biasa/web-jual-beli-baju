@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'utama.landing-page')->name('home');
 
+Route::view('/keranjang', 'utama.keranjang')->name('keranjang');
+
+Route::view('/checkout', 'utama.checkout')->name('checkout');
+
 Route::view('/new', 'utama.new')->name('new');
 
 Route::view('/dashboard', 'admin.dashboard')->name('dashboard');

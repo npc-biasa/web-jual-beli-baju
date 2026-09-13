@@ -8,16 +8,19 @@
         <a href="{{ url('/') }}#filters" class="transition hover:text-neutral-500">Filters</a>
     </nav>
 
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3 sm:gap-4">
         <button type="button" aria-label="Search" class="transition hover:text-neutral-500">
             <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
         </button>
         <a href="#account" aria-label="Account" class="transition hover:text-neutral-500">
             <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
         </a>
-        <a href="#cart" aria-label="Shopping bag" class="relative transition hover:text-neutral-500">
+        <a href="{{ url('/keranjang') }}" aria-label="Shopping bag" class="relative transition hover:text-neutral-500">
             <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M5 8.5h14l-1 11H6l-1-11Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
             <span class="absolute -right-2 -top-2 text-[8px]">0</span>
+        </a>
+        <a href="{{ url('/checkout') }}" class="inline-flex items-center rounded-full bg-neutral-900 px-3 py-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-neutral-700 sm:px-4">
+            Checkout
         </a>
     </div>
 </header>
