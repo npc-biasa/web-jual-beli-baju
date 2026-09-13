@@ -5,11 +5,11 @@
 @php
 	// Contoh: ['name' => 'Nama Baju', 'price' => 'Rp 150.000', 'image' => asset('images/nama-baju.jpg')],
 	$products = [
-		['name' => 'Faith Industry "Poptart" Family Jersey', 'price' => 'Rp 700.000', 'image' => 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=85'],
-		['name' => 'Norem ipsum dolor', 'price' => 'Rp 120.000', 'image' => 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=500&q=85'],
-		['name' => 'Norem ipsum dolor', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=85'],
-		['name' => 'Norem ipsum dolor', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=500&q=85'],
-		['name' => 'Norem ipsum dolor', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=500&q=85'],
+		['id' => 'poptart-jersey', 'name' => 'Faith Industry "Poptart" Family Jersey', 'price' => 'Rp 700.000', 'image' => 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=85'],
+		['id' => 'classic-tee', 'name' => 'Classic Crew Tee', 'price' => 'Rp 120.000', 'image' => 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=500&q=85'],
+		['id' => 'essential-shirt', 'name' => 'Essential Overshirt', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=85'],
+		['id' => 'daily-jacket', 'name' => 'Daily Utility Jacket', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=500&q=85'],
+		['id' => 'studio-top', 'name' => 'Studio Knit Top', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=500&q=85'],
 	];
 @endphp
 
@@ -31,7 +31,7 @@
 				</button>
 				<div data-carousel class="grid grid-cols-2 overflow-hidden sm:grid-cols-3 lg:grid-cols-5">
 					@foreach ($products as $product)
-						<a href="#product" class="group border-r border-neutral-200 px-3 py-2 first:border-l sm:px-4 sm:py-3">
+						<a href="{{ route('produk.detail', $product['id']) }}" class="group border-r border-neutral-200 px-3 py-2 first:border-l sm:px-4 sm:py-3">
 							<div class="aspect-[4/5] overflow-hidden bg-neutral-100">
 								<img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="h-full w-full object-cover grayscale-[15%] transition duration-500 group-hover:scale-105">
 							</div>

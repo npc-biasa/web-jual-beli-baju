@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'utama.landing-page')->name('home');
 
-Route::view('/keranjang', 'utama.keranjang')->name('keranjang');
+Route::get('/produk/{product}', [ProductController::class, 'show'])->name('produk.detail');
+Route::post('/produk/{product}/keranjang', [ProductController::class, 'addToCart'])->name('produk.keranjang');
+Route::get('/keranjang', [ProductController::class, 'cart'])->name('keranjang');
 
 Route::view('/checkout', 'utama.checkout')->name('checkout');
 
