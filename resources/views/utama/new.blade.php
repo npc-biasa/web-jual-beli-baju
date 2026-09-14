@@ -4,11 +4,11 @@
 
 @php
 	$products = [
-		['name' => 'Faith Industries "Poptart" Family Jersey', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=85'],
-		['name' => 'Faith Industries "The Black Swordman Saga" Grey washed boxy double zip hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=600&q=85'],
-		['name' => 'Faith Industries "The King Is Here" Cropped Sweatshirt T-Shirt', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=85'],
-		['name' => 'Faith Industries "The Coat of a Dream" Black Washed Boxy Double Zip Hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=85'],
-		['name' => 'Faith Industries "The Coat of a Dream" Black Washed Boxy Double Zip Hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=600&q=85'],
+		['id' => 'poptart-jersey', 'name' => 'Faith Industries "Poptart" Family Jersey', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=85'],
+		['id' => 'classic-tee', 'name' => 'Faith Industries "The Black Swordman Saga" Grey washed boxy double zip hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=600&q=85'],
+		['id' => 'essential-shirt', 'name' => 'Faith Industries "The King Is Here" Cropped Sweatshirt T-Shirt', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=85'],
+		['id' => 'daily-jacket', 'name' => 'Faith Industries "The Coat of a Dream" Black Washed Boxy Double Zip Hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=85'],
+		['id' => 'studio-top', 'name' => 'Faith Industries "The Coat of a Dream" Black Washed Boxy Double Zip Hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=600&q=85'],
 	];
 @endphp
 
@@ -52,7 +52,7 @@
 				</div>
 				<div class="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3">
 					@foreach ($products as $product)
-						<a href="#product" class="group min-w-0">
+						<a href="{{ route('produk.detail', $product['id']) }}" class="group min-w-0">
 							<div class="aspect-[4/5] w-full overflow-hidden bg-neutral-100">
 								<img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="h-full w-full object-cover grayscale-[10%] transition duration-500 group-hover:scale-105">
 							</div>
