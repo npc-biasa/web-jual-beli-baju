@@ -46,10 +46,6 @@
 			</div>
 		</section>
 
-		<section id="trending" class="border-t border-neutral-100 px-6 py-16 text-center sm:py-24">
-			<p class="text-[9px] uppercase tracking-[0.22em] text-neutral-500">FTH essentials</p>
-			<h2 class="mt-3 text-3xl font-light tracking-tight sm:text-5xl">Wear your point of view.</h2>
-		</section>
 	<script>
 		const carousel = document.querySelector('[data-carousel]');
 		const products = [...carousel.children];
