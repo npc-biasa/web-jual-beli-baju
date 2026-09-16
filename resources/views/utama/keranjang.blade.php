@@ -72,7 +72,7 @@
                             <span class="text-sm font-semibold text-neutral-900">Total pembayaran</span>
                             <span class="text-xl font-bold text-neutral-900">Rp {{ number_format($total, 0, ',', '.') }}</span>
                         </div>
-                        <a href="{{ url('/checkout') }}" class="mt-6 inline-flex w-full items-center justify-center bg-neutral-900 px-5 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-neutral-700">Checkout ({{ count($cartItems) }})</a>
+                        <a href="{{ url('/checkout') }}" class="mt-6 inline-flex w-full items-center justify-center border border-neutral-900 bg-neutral-900 px-5 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-neutral-700">Checkout ({{ count($cartItems) }})</a>
                     </aside>
                 </div>
             @endif

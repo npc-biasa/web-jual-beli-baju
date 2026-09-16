@@ -109,7 +109,7 @@
                 <span>Total Payment</span>
                 <span>Rp130.000</span>
             </div>
-            <button type="submit" form="checkout-form" class="mt-6 h-7 w-full bg-black text-[8px] font-medium uppercase text-white transition hover:bg-neutral-700">Order Now</button>
+            <button type="submit" form="checkout-form" class="mt-6 h-9 w-full border border-black bg-black text-[10px] font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-neutral-700">Order Now</button>
         </aside>
     </main>
 
