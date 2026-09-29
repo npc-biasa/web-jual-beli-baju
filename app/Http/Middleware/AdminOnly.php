@@ -10,7 +10,7 @@ class AdminOnly
 {
     public function handle(Request $request, Closure $next): Response
     {
-        abort_unless(strtolower($request->user()?->role ?? '') === 'admin', 403);
+        abort_unless(strtolower($request->user()?->role ?? '') === 'admin', 'Unauthorized action.');
 
         return $next($request);
     }
