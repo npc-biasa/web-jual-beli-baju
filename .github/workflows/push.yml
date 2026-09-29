@@ -3,7 +3,7 @@ name: Deploy ke InfinityFree
 on:
   push:
     branches:
-      - main  # Ganti jadi master jika branch utama Anda bernama 'master'
+      - main  # Ganti jadi master jika branch utama Anda 'master'
 
 jobs:
   web-deploy:
@@ -13,12 +13,12 @@ jobs:
     - name: Ambil Code Terbaru dari GitHub
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # Wajib angka 0 agar git-ftp bisa membaca riwayat file
+        fetch-depth: 0
 
     - name: Install dan Jalankan git-ftp
       run: |
         sudo apt-get update
         sudo apt-get install -y git-ftp
         
-        # Mengeksekusi pengiriman file secara langsung dengan mengabaikan enkripsi ketat SSL
-        git ftp push --user "${{ secrets.FTP_USERNAME }}" --passwd "${{ secrets.FTP_PASSWORD }}" --url "ftp://${{ secrets.FTP_SERVER }}/htdocs/" --insecure
+        # Menggunakan 'init' dengan opsi -f (force) agar sukses di unggahan pertama kali
+        git ftp init -f --user "${{ secrets.FTP_USERNAME }}" --passwd "${{ secrets.FTP_PASSWORD }}" --url "ftp://${{ secrets.FTP_SERVER }}/htdocs/" --insecure
