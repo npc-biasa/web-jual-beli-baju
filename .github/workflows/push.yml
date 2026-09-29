@@ -16,9 +16,13 @@ jobs:
         fetch-depth: 0
 
     - name: Install dan Jalankan git-ftp
+      env:
+        FTP_USER: \${{ secrets.FTP_USERNAME }}
+        FTP_PASS: \${{ secrets.FTP_PASSWORD }}
+        FTP_HOST: \${{ secrets.FTP_SERVER }}
       run: |
         sudo apt-get update
         sudo apt-get install -y git-ftp
         
-        # Menggunakan 'init' dengan opsi -f (force) agar sukses di unggahan pertama kali
-        git ftp init -f --user "${{ secrets.FTP_USERNAME }}" --passwd "${{ secrets.FTP_PASSWORD }}" --url "ftp://${{ secrets.FTP_SERVER }}/bajuku.rf.gd/htdocs/" --insecure
+        # Format alternatif tanpa tanda `--url` yang sensitif, langsung digabung di akhir perintah
+        git ftp init -f -u "\$FTP_USER" -p "\(FTP_PASS" "ftp://\)FTP_HOST/bajuku.rf.gd/htdocs/" --insecure
