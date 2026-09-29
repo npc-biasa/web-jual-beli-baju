@@ -27,14 +27,17 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/new', [ProductController::class, 'index'])->name('new');
 
+Route::middleware(['auth', 'admin'])->group(function () {
+	Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
+});
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-	Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
 	Route::get('/products', [ProductAdminController::class, 'index'])->name('products.index');
 	Route::get('/products/create', [ProductAdminController::class, 'create'])->name('products.create');
 	Route::post('/products', [ProductAdminController::class, 'store'])->name('products.store');
 	Route::view('/manage-orders', 'admin.manage-order')->name('manage-orders');
 });
 
-Route::redirect('/dashboard', '/admin/dashboard');
+Route::redirect('/admin/dashboard', '/dashboard')->middleware(['auth', 'admin']);
 Route::redirect('/products-catalog', '/admin/products');
 Route::redirect('/manage-orders', '/admin/manage-orders');

@@ -63,6 +63,22 @@ test('customers cannot access product administration', function () {
         ->assertForbidden();
 });
 
+test('admin login opens the dashboard at /dashboard', function () {
+    $admin = User::factory()->create([
+        'email' => 'admin@example.com',
+        'password' => 'test-password',
+        'role' => 'admin',
+    ]);
+
+    $this->post('/login', [
+        'email' => $admin->email,
+        'password' => 'test-password',
+    ])->assertRedirect('/dashboard');
+
+    $this->get('/dashboard')->assertSuccessful();
+    $this->get('/admin/dashboard')->assertRedirect('/dashboard');
+});
+
 test('authenticated checkout stores order items payment and decrements stock', function () {
     $user = User::factory()->create();
     $product = createCheckoutProduct();
