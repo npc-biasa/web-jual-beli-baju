@@ -31,6 +31,8 @@ class Baju extends Model
         'ukuran',
         'warna',
         'gambar',
+        'gambar_data',
+        'gambar_mime',
     ];
 
     protected function casts(): array
@@ -43,6 +45,10 @@ class Baju extends Model
 
     public function getGambarUrlAttribute(): ?string
     {
+        if (filled($this->gambar_data) && filled($this->gambar_mime)) {
+            return "data:{$this->gambar_mime};base64,{$this->gambar_data}";
+        }
+
         if (blank($this->gambar)) {
             return null;
         }

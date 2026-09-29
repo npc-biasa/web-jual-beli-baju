@@ -3,7 +3,6 @@
 use App\Models\Baju;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 function createCheckoutProduct(array $attributes = []): Baju
 {
@@ -36,8 +35,11 @@ test('guest checkout requires a customer account and registration signs in', fun
 });
 
 test('admin can create a product with description variants and photo', function () {
-    Storage::fake('public');
     $admin = User::factory()->create(['role' => 'admin']);
+    $imageUpload = UploadedFile::fake()->createWithContent(
+        'jacket.png',
+        base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=')
+    );
 
     $this->actingAs($admin)->post('/admin/products', [
         'nama_baju' => 'Canvas Jacket',
@@ -47,14 +49,16 @@ test('admin can create a product with description variants and photo', function 
         'stok' => 8,
         'ukuran' => 'M, L, XL',
         'warna' => 'Olive, Black',
-        'gambar' => UploadedFile::fake()->create('jacket.jpg', 100, 'image/jpeg'),
+        'gambar' => $imageUpload,
     ])->assertRedirect('/admin/products');
 
     $product = Baju::query()->where('nama_baju', 'Canvas Jacket')->firstOrFail();
     expect($product->deskripsi)->toBe('Jaket kanvas tahan lama.')
         ->and($product->ukuran)->toBe('M, L, XL')
-        ->and($product->warna)->toBe('Olive, Black');
-    Storage::disk('public')->assertExists($product->gambar);
+        ->and($product->warna)->toBe('Olive, Black')
+        ->and($product->gambar_data)->not->toBeEmpty()
+        ->and($product->gambar_mime)->toBe('image/png')
+        ->and(base64_decode($product->gambar_data))->toBe($imageUpload->getContent());
 });
 
 test('customers cannot access product administration', function () {

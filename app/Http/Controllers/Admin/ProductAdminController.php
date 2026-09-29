@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Baju;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductAdminController extends Controller
@@ -37,7 +36,9 @@ class ProductAdminController extends Controller
         ]);
 
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('products', 'public');
+            $image = $request->file('gambar');
+            $validated['gambar_data'] = base64_encode($image->getContent());
+            $validated['gambar_mime'] = $image->getMimeType();
         }
 
         Baju::query()->create($validated);

@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Baju;
+use App\Models\User;
+use Illuminate\Http\UploadedFile;
 
 function createCatalogProduct(array $attributes = []): Baju
 {
@@ -43,4 +45,32 @@ test('catalog search filters database products and pagination keeps the query', 
         ->assertSuccessful()
         ->assertSee('value="Cotton"', false)
         ->assertViewHas('products', fn ($products) => $products->currentPage() === 2);
+});
+
+test('admin product uploads are stored in the database', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $imageUpload = UploadedFile::fake()->createWithContent(
+        'tee.png',
+        base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=')
+    );
+
+    $this->actingAs($admin)
+        ->post(route('admin.products.store'), [
+            'nama_baju' => 'Image Tee',
+            'deskripsi' => 'Kaos dengan gambar',
+            'kategori' => 'T-Shirt',
+            'harga' => 125000,
+            'stok' => 5,
+            'ukuran' => 'M',
+            'warna' => 'Black',
+            'gambar' => $imageUpload,
+        ])
+        ->assertRedirect(route('admin.products.index'));
+
+    $product = Baju::query()->where('nama_baju', 'Image Tee')->firstOrFail();
+
+    expect($product->gambar_data)->not->toBeEmpty()
+        ->and($product->gambar_mime)->toStartWith('image/')
+        ->and(base64_decode($product->gambar_data))->toBe($imageUpload->getContent())
+        ->and($product->gambar_url)->toStartWith('data:image/');
 });
