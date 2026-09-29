@@ -35,6 +35,8 @@ class ProductAdminController extends Controller
             'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
 
+        unset($validated['gambar']);
+
         if ($request->hasFile('gambar')) {
             $image = $request->file('gambar');
             $validated['gambar_data'] = base64_encode($image->getContent());

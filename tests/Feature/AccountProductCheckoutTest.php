@@ -56,6 +56,7 @@ test('admin can create a product with description variants and photo', function 
     expect($product->deskripsi)->toBe('Jaket kanvas tahan lama.')
         ->and($product->ukuran)->toBe('M, L, XL')
         ->and($product->warna)->toBe('Olive, Black')
+        ->and($product->gambar)->toBeNull()
         ->and($product->gambar_data)->not->toBeEmpty()
         ->and($product->gambar_mime)->toBe('image/png')
         ->and(base64_decode($product->gambar_data))->toBe($imageUpload->getContent());
