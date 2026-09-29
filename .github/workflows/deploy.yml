@@ -16,7 +16,9 @@ jobs:
     - name: Sinkronisasi File ke FTP InfinityFree
       uses: SamKirkland/FTP-Deploy-Action@v4
       with:
-        server: ${{ secrets.FTP_SERVER }}
+        server: ftpuploud.net
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: bajuku.rf.gd/htdocs/
+        server-dir: /htdocs/
+        retries: 3
+        retry-delay: 10
