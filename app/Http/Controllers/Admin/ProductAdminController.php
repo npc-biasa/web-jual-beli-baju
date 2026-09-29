@@ -27,7 +27,7 @@ class ProductAdminController extends Controller
     {
         $validated = $request->validate([
             'nama_baju' => ['required', 'string', 'max:255'],
-            'deskripsi' => ['required', 'string', 'max:5000'],
+            'deskripsi' => ['required', 'string', 'max:5000000'],
             'kategori' => ['required', 'string', 'max:100'],
             'harga' => ['required', 'numeric', 'min:0', 'max:9999999999'],
             'stok' => ['required', 'integer', 'min:0'],
