@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Ambil Code Terbaru dari GitHub
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Sync files to FTP
-      uses: Samkirkland/ftp-deploy-action@v4
+      uses: Samkirkland/ftp-deploy-action@v3
 
       with:
         server: ftpuploud.net
