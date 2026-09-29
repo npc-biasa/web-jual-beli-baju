@@ -3,7 +3,7 @@ name: Deploy to InfinityFree
 on:
   push:
     branches:
-      - master # Ubah ke 'master' jika branch utama Anda bernama master
+      - main
 
 jobs:
   web-deploy:
@@ -16,7 +16,9 @@ jobs:
     - name: Sync files via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.FTP_SERVER }}
+        server: ftpupload.net
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /htdocs/ # Direktori utama website di InfinityFree
+        protocol: ftp
+        port: 21
+        server-dir: /htdocs/
