@@ -13,8 +13,9 @@ jobs:
     - name: Ambil Code Terbaru dari GitHub
       uses: actions/checkout@v4
 
-    - name: Sinkronisasi File ke FTP InfinityFree
-      uses: SamKirkland/FTP-Deploy-Action@v4
+    - name: Sync files to FTP
+      uses: samkirkland/ftp-deploy-action@v4
+
       with:
         server: ftpuploud.net
         username: ${{ secrets.FTP_USERNAME }}
