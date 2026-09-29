@@ -41,3 +41,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::redirect('/admin/dashboard', '/dashboard')->middleware(['auth', 'admin']);
 Route::redirect('/admin/products-catalog', '/products');
 Route::redirect('/admin/manage-orders', '/admin/manage-orders');
+
+Route::get('/fix-cache', function () {
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    Artisan::call('cache:clear');
+    return 'OK';
+});
