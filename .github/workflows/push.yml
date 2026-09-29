@@ -3,23 +3,22 @@ name: Deploy ke InfinityFree
 on:
   push:
     branches:
-      - main  # Ubah ke master jika branch utama Anda 'master'
+      - main  # Ganti jadi master jika branch utama Anda bernama 'master'
 
 jobs:
   web-deploy:
-    name: Proses Deploy Terbuka
+    name: Proses Upload Resmi git-ftp
     runs-on: ubuntu-latest
     steps:
-    - name: Ambil Code Terbaru
+    - name: Ambil Code Terbaru dari GitHub
       uses: actions/checkout@v4
-
-    - name: Upload via FTP Alternatif
-      uses: SebastiaanBlondelle/ftp-deployment-action@v1.3.0
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local_dir: ./
-        remote_dir: /htdocs/
-        # Memaksa koneksi biasa karena InfinityFree sering menolak SSL/TLS otomatis
-        security: 'loose' 
+        fetch-depth: 0 # Wajib angka 0 agar git-ftp bisa membaca riwayat file
+
+    - name: Install dan Jalankan git-ftp
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git-ftp
+        
+        # Mengeksekusi pengiriman file secara langsung dengan mengabaikan enkripsi ketat SSL
+        git ftp push --user "${{ secrets.FTP_USERNAME }}" --passwd "${{ secrets.FTP_PASSWORD }}" --url "ftp://${{ secrets.FTP_SERVER }}/htdocs/" --insecure
