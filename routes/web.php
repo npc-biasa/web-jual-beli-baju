@@ -10,6 +10,7 @@ Route::post('/produk/{product}/keranjang', [ProductController::class, 'addToCart
 Route::get('/keranjang', [ProductController::class, 'cart'])->name('keranjang');
 
 Route::view('/checkout', 'utama.checkout')->name('checkout');
+Route::post('/checkout', [ProductController::class, 'placeOrder'])->name('checkout.process');
 
 Route::view('/new', 'utama.new')->name('new');
 

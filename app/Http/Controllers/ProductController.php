@@ -51,6 +51,21 @@ class ProductController extends Controller
         ]);
     }
 
+    public function placeOrder(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'email'],
+            'recipient_name' => ['required', 'string', 'max:255'],
+            'recipient_phone' => ['required', 'string', 'max:30'],
+        ]);
+
+        abort_if(empty($request->session()->get('cart', [])), 400, 'Keranjang masih kosong.');
+
+        $request->session()->forget('cart');
+
+        return redirect()->route('home')->with('status', 'Pesanan berhasil dibuat.');
+    }
+
     private function findProduct(string $product): array
     {
         $products = [

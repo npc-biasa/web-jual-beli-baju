@@ -15,7 +15,7 @@
     <main class="mx-auto grid max-w-[1120px] gap-12 px-6 py-12 sm:px-10 lg:grid-cols-[1fr_0.92fr] lg:gap-20 lg:px-12 lg:py-16">
         <section>
             <h1 class="text-[13px] font-semibold text-neutral-950">Address Details</h1>
-            <form id="checkout-form" action="#" method="POST" class="mt-4">
+            <form id="checkout-form" action="{{ route('checkout.process') }}" method="POST" class="mt-4">
                 @csrf
                 <div class="space-y-3">
                     <div>

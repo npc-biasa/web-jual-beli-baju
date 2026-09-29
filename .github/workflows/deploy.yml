@@ -1,0 +1,22 @@
+name: Deploy ke InfinityFree
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: Proses Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Ambil Code Terbaru dari GitHub
+      uses: actions/checkout@v4
+
+    - name: Sinkronisasi File ke FTP InfinityFree
+      uses: SamKirkland/FTP-Deploy-Action@v4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: /htdocs/
