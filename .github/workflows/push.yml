@@ -3,21 +3,23 @@ name: Deploy ke InfinityFree
 on:
   push:
     branches:
-      - main  # Ubah ke master jika branch utama Anda bernama master
+      - main  # Ubah ke master jika branch utama Anda 'master'
 
 jobs:
   web-deploy:
-    name: Proses Deploy via LFTP
+    name: Proses Deploy Terbuka
     runs-on: ubuntu-latest
     steps:
-    - name: Ambil Code Terbaru dari GitHub
+    - name: Ambil Code Terbaru
       uses: actions/checkout@v4
 
-    - name: Install lftp dan Upload ke Server
-      env:
-        FTP_SERVER: ftpuploud.net
-        FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-        FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-      run: |
-        sudo apt-get update && sudo apt-get install -y lftp
-        lftp -e "set ftp:ssl-allow no; open $FTP_SERVER; user $FTP_USERNAME $FTP_PASSWORD; mirror -X .git/ -X .github/ -R ./ /htdocs/; quit"
+    - name: Upload via FTP Alternatif
+      uses: SebastiaanBlondelle/ftp-deployment-action@v1.3.0
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local_dir: ./
+        remote_dir: /htdocs/
+        # Memaksa koneksi biasa karena InfinityFree sering menolak SSL/TLS otomatis
+        security: 'loose' 
