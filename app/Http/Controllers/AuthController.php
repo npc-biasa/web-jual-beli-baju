@@ -32,7 +32,7 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
-        $destination = $request->user()->role === 'admin'
+        $destination = strtolower($request->user()->role) === 'admin'
             ? route('admin.dashboard')
             : route('home');
 

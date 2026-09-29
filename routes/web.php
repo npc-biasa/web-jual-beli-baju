@@ -38,6 +38,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 	Route::view('/manage-orders', 'admin.manage-order')->name('manage-orders');
 });
 
-Route::redirect('/admin/dashboard', '/dashboard')->middleware(['auth', 'admin']);
+Route::redirect('/dashboard', '/admin/dashboard')->middleware(['auth', 'admin']);
 Route::redirect('/products-catalog', '/admin/products');
 Route::redirect('/manage-orders', '/admin/manage-orders');
