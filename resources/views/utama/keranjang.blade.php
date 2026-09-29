@@ -41,7 +41,11 @@
                             @foreach ($cartItems as $item)
                                 <div class="grid gap-4 px-4 py-5 sm:grid-cols-[104px_minmax(0,1fr)_120px_100px] sm:items-center sm:px-6">
                                     <div class="h-28 w-28 overflow-hidden bg-neutral-100 sm:h-24 sm:w-24">
-                                        <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="h-full w-full object-cover grayscale-[8%]">
+                                        @if ($item['image'])
+                                            <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="h-full w-full object-cover">
+                                        @else
+                                            <div class="flex h-full items-center justify-center text-2xl font-light text-neutral-400">{{ mb_substr($item['name'], 0, 1) }}</div>
+                                        @endif
                                     </div>
                                     <div class="min-w-0">
                                         <h2 class="text-sm font-medium text-neutral-900">{{ $item['name'] }}</h2>

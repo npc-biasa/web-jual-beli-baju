@@ -2,17 +2,6 @@
 
 @section('title', 'FTH | New Arrivals')
 
-@php
-	// Contoh: ['name' => 'Nama Baju', 'price' => 'Rp 150.000', 'image' => asset('images/nama-baju.jpg')],
-	$products = [
-		['id' => 'poptart-jersey', 'name' => 'Faith Industry "Poptart" Family Jersey', 'price' => 'Rp 700.000', 'image' => 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=85'],
-		['id' => 'classic-tee', 'name' => 'Classic Crew Tee', 'price' => 'Rp 120.000', 'image' => 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=500&q=85'],
-		['id' => 'essential-shirt', 'name' => 'Essential Overshirt', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=85'],
-		['id' => 'daily-jacket', 'name' => 'Daily Utility Jacket', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=500&q=85'],
-		['id' => 'studio-top', 'name' => 'Studio Knit Top', 'price' => 'Rp 100.000', 'image' => 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=500&q=85'],
-	];
-@endphp
-
 @section('content')
 		<section id="new-arrivals" class="relative h-[min(58vw,560px)] min-h-[280px] overflow-hidden bg-neutral-200">
 			<img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&w=2200&q=90" alt="FTH latest collection" class="h-full w-full object-cover object-center">
@@ -24,43 +13,27 @@
 			</div>
 		</section>
 
-		<section id="collections" class="relative mx-auto max-w-[1440px] px-9 py-6 sm:px-16 sm:py-8">
-			<div class="relative">
-				<button type="button" data-carousel-prev aria-label="Previous products" class="absolute -left-8 top-1/2 z-10 -translate-y-1/2 p-2 transition hover:scale-110 sm:-left-12">
-					<svg aria-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4"><path d="m15 18-6-6 6-6"/></svg>
-				</button>
-				<div data-carousel class="grid grid-cols-2 overflow-hidden sm:grid-cols-3 lg:grid-cols-5">
-					@foreach ($products as $product)
-						<a href="{{ route('produk.detail', $product['id']) }}" class="group border-r border-neutral-200 px-3 py-2 first:border-l sm:px-4 sm:py-3">
-							<div class="aspect-[4/5] overflow-hidden bg-neutral-100">
-								<img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="h-full w-full object-cover grayscale-[15%] transition duration-500 group-hover:scale-105">
-							</div>
-							<p class="mt-2 line-clamp-2 min-h-7 text-[8px] leading-tight text-neutral-800 sm:text-[9px]">{{ $product['name'] }}</p>
-							<p class="mt-1 text-[8px] text-neutral-500 sm:text-[9px]">{{ $product['price'] }}</p>
-						</a>
-					@endforeach
-				</div>
-				<button type="button" data-carousel-next aria-label="Next products" class="absolute -right-8 top-1/2 z-10 -translate-y-1/2 p-2 transition hover:scale-110 sm:-right-12">
-					<svg aria-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4"><path d="m9 18 6-6-6-6"/></svg>
-				</button>
+		<section id="collections" class="mx-auto max-w-[1440px] px-6 py-8 sm:px-10 sm:py-10">
+			<div class="mb-5 flex items-end justify-between gap-4">
+				<h2 class="text-xs font-semibold uppercase tracking-[0.18em]">Latest products</h2>
+				<a href="{{ route('new') }}" class="text-[9px] font-semibold uppercase tracking-[0.12em] underline underline-offset-4">View all</a>
+			</div>
+			<div class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+				@forelse ($products as $product)
+					<a href="{{ route('produk.detail', $product) }}" class="group min-w-0">
+						<div class="flex aspect-[4/5] items-center justify-center overflow-hidden bg-neutral-100">
+							@if ($product->gambar_url)
+								<img src="{{ $product->gambar_url }}" alt="{{ $product->nama_baju }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+							@else
+								<span class="text-4xl font-light text-neutral-400">{{ mb_substr($product->nama_baju, 0, 1) }}</span>
+							@endif
+						</div>
+						<p class="mt-2 line-clamp-2 min-h-7 text-[9px] leading-tight text-neutral-800">{{ $product->nama_baju }}</p>
+						<p class="mt-1 text-[9px] text-neutral-500">Rp {{ number_format($product->harga, 0, ',', '.') }}</p>
+					</a>
+				@empty
+					<p class="col-span-full py-12 text-center text-xs text-neutral-500">Produk belum tersedia.</p>
+				@endforelse
 			</div>
 		</section>
-
-	<script>
-		const carousel = document.querySelector('[data-carousel]');
-		const products = [...carousel.children];
-		let offset = 0;
-
-		function moveCarousel(direction) {
-			const visible = window.innerWidth >= 1024 ? 5 : window.innerWidth >= 640 ? 3 : 2;
-			offset = Math.max(0, Math.min(offset + direction, products.length - visible));
-			products.forEach((product, index) => {
-				product.style.display = index >= offset && index < offset + visible ? '' : 'none';
-			});
-		}
-
-		document.querySelector('[data-carousel-prev]').addEventListener('click', () => moveCarousel(-1));
-		document.querySelector('[data-carousel-next]').addEventListener('click', () => moveCarousel(1));
-		window.addEventListener('resize', () => moveCarousel(0));
-	</script>
 @endsection

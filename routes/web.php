@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'utama.landing-page')->name('home');
+Route::get('/', [ProductController::class, 'home'])->name('home');
 
 Route::get('/produk/{product}', [ProductController::class, 'show'])->name('produk.detail');
 Route::post('/produk/{product}/keranjang', [ProductController::class, 'addToCart'])->name('produk.keranjang');
@@ -12,7 +12,7 @@ Route::get('/keranjang', [ProductController::class, 'cart'])->name('keranjang');
 Route::view('/checkout', 'utama.checkout')->name('checkout');
 Route::post('/checkout', [ProductController::class, 'placeOrder'])->name('checkout.process');
 
-Route::view('/new', 'utama.new')->name('new');
+Route::get('/new', [ProductController::class, 'index'])->name('new');
 
 Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
 

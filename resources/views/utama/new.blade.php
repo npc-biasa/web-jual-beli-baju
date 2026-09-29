@@ -2,67 +2,53 @@
 
 @section('title', 'New Arrivals | FTH')
 
-@php
-	$products = [
-		['id' => 'poptart-jersey', 'name' => 'Faith Industries "Poptart" Family Jersey', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=85'],
-		['id' => 'classic-tee', 'name' => 'Faith Industries "The Black Swordman Saga" Grey washed boxy double zip hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=600&q=85'],
-		['id' => 'essential-shirt', 'name' => 'Faith Industries "The King Is Here" Cropped Sweatshirt T-Shirt', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=85'],
-		['id' => 'daily-jacket', 'name' => 'Faith Industries "The Coat of a Dream" Black Washed Boxy Double Zip Hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=85'],
-		['id' => 'studio-top', 'name' => 'Faith Industries "The Coat of a Dream" Black Washed Boxy Double Zip Hoodie', 'price' => 'Rp 100.000,00', 'image' => 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=600&q=85'],
-	];
-@endphp
-
 @section('content')
 	<div class="flex min-h-[calc(100vh-3.5rem)] flex-col md:flex-row">
-		<aside data-filter class="w-full shrink-0 border-b border-neutral-200 bg-neutral-50 text-[8px] uppercase tracking-[0.08em] md:min-h-[calc(100vh-3.5rem)] md:w-56 md:border-b-0 md:border-r">
-			<div class="p-4">
-				<h1 class="mb-5 text-[12px] font-medium uppercase tracking-[0.12em]">New</h1>
-				<div class="border-b border-neutral-300 p-3">
-					<label class="flex items-center gap-2 border border-neutral-300 px-2 py-2 text-[7px] text-neutral-500">
-						<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
-						<input type="search" placeholder="Search" class="w-full border-0 p-0 text-[8px] uppercase outline-none placeholder:text-neutral-400">
-					</label>
-				</div>
-
-				@foreach ([
-					['title' => 'Categories', 'items' => ['New', 'T-Shirt', 'Shirt', 'Hoodie']],
-					['title' => 'Availability', 'items' => ['Available', 'Out of stock']],
-					['title' => 'Size', 'items' => ['M', 'L', 'XL', 'XXL']],
-				] as $filter)
-					<fieldset class="border-b border-neutral-300 p-3 last:border-b-0">
-						<legend class="mb-3 text-[7px] font-semibold">{{ $filter['title'] }}</legend>
-						<div class="space-y-2">
-							@foreach ($filter['items'] as $item)
-								<label class="flex items-center gap-2 normal-case tracking-normal text-neutral-700">
-									<input type="checkbox" class="h-3 w-3 rounded-none border-neutral-400 accent-black">
-									{{ $item }}
-								</label>
-							@endforeach
-						</div>
-					</fieldset>
-				@endforeach
+		<aside class="w-full shrink-0 border-b border-neutral-200 bg-neutral-50 md:w-64 md:border-b-0 md:border-r">
+			<div class="p-5">
+				<h1 class="mb-5 text-xs font-medium uppercase tracking-[0.12em]">New arrivals</h1>
+				<form action="{{ route('new') }}" method="GET" role="search">
+					<label for="product-search" class="mb-2 block text-[9px] font-semibold uppercase tracking-[0.12em]">Search products</label>
+					<div class="flex border border-neutral-300 bg-white focus-within:border-neutral-900">
+						<input id="product-search" name="q" type="search" value="{{ $search }}" placeholder="Name, category, size..." class="min-w-0 flex-1 border-0 bg-transparent px-3 py-2.5 text-xs outline-none placeholder:text-neutral-400">
+						<button type="submit" aria-label="Search products" class="px-3 text-neutral-700 transition hover:text-neutral-950">
+							<svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+						</button>
+					</div>
+				</form>
+				@if ($search !== '')
+					<a href="{{ route('new') }}" class="mt-3 inline-block text-[9px] uppercase tracking-[0.1em] text-neutral-500 underline underline-offset-4">Clear search</a>
+				@endif
 			</div>
 		</aside>
 
 		<section aria-label="New arrival products" class="min-w-0 flex-1 px-4 py-8 sm:px-8 lg:px-12">
 			<div class="mx-auto max-w-6xl">
-				<div class="mb-6 flex items-center justify-between">
-					<p class="text-[9px] uppercase tracking-[0.18em] text-neutral-500">Latest collection</p>
-					<button type="button" class="text-[9px] uppercase tracking-[0.12em] text-neutral-500 transition hover:text-neutral-950">Sort by</button>
+				<div class="mb-6 flex items-center justify-between gap-4">
+					<p class="text-[9px] uppercase tracking-[0.18em] text-neutral-500">
+						{{ $products->total() }} {{ $products->total() === 1 ? 'product' : 'products' }}
+						@if ($search !== '') <span class="normal-case tracking-normal">for "{{ $search }}"</span> @endif
+					</p>
 				</div>
 				<div class="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3">
-					@foreach ($products as $product)
-						<a href="{{ route('produk.detail', $product['id']) }}" class="group min-w-0">
-							<div class="aspect-[4/5] w-full overflow-hidden bg-neutral-100">
-								<img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="h-full w-full object-cover grayscale-[10%] transition duration-500 group-hover:scale-105">
+					@forelse ($products as $product)
+						<a href="{{ route('produk.detail', $product) }}" class="group min-w-0">
+							<div class="flex aspect-[4/5] w-full items-center justify-center overflow-hidden bg-neutral-100">
+								@if ($product->gambar_url)
+									<img src="{{ $product->gambar_url }}" alt="{{ $product->nama_baju }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+								@else
+									<span class="text-4xl font-light text-neutral-400">{{ mb_substr($product->nama_baju, 0, 1) }}</span>
+								@endif
 							</div>
-							<h2 class="mt-3 line-clamp-2 min-h-7 text-[8px] leading-[1.25] text-neutral-800">{{ $product['name'] }}</h2>
-							<p class="mt-1 text-[8px] text-neutral-500">{{ $product['price'] }}</p>
+							<h2 class="mt-3 line-clamp-2 min-h-7 text-[8px] leading-[1.25] text-neutral-800">{{ $product->nama_baju }}</h2>
+							<p class="mt-1 text-[8px] text-neutral-500">Rp {{ number_format($product->harga, 0, ',', '.') }}</p>
 						</a>
-					@endforeach
+					@empty
+						<p class="col-span-full border-y border-neutral-200 py-16 text-center text-xs text-neutral-500">Tidak ada produk yang cocok dengan pencarian ini.</p>
+					@endforelse
 				</div>
+				<div class="mt-10">{{ $products->links() }}</div>
 			</div>
 		</section>
-		</div>
 	</div>
 @endsection

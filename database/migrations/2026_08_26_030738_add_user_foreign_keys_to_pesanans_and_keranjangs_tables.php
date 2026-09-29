@@ -14,14 +14,14 @@ return new class extends Migration
         schema::table('keranjangs', function (Blueprint $table) {
             $table->foreign('id_baju')
                 ->references('id_baju')
-                ->on('bajus')
+                ->on('baju')
                 ->cascadeOnDelete();
         });
 
         schema::table('detail_pesanans', function (Blueprint $table) {
             $table->foreign('id_baju')
                 ->references('id_baju')
-                ->on('bajus')
+                ->on('baju')
                 ->cascadeOnDelete();
         });
 

@@ -9,9 +9,9 @@
     </nav>
 
     <div class="flex items-center gap-3 sm:gap-4">
-        <button type="button" aria-label="Search" class="transition hover:text-neutral-500">
+        <a href="{{ route('new') }}" aria-label="Search products" title="Search products" class="transition hover:text-neutral-500">
             <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-        </button>
+        </a>
         <a href="#account" aria-label="Account" class="transition hover:text-neutral-500">
             <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
         </a>

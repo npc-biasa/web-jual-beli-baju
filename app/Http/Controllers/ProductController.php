@@ -2,37 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Baju;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function show(string $product): View
+    public function home(): View
     {
-        return view('utama.detail-produk', [
-            'product' => $this->findProduct($product),
+        return view('utama.landing-page', [
+            'products' => Baju::query()->latest()->limit(5)->get(),
         ]);
     }
 
-    public function addToCart(Request $request, string $product): RedirectResponse
+    public function index(Request $request): View
     {
-        $productData = $this->findProduct($product);
+        $validated = $request->validate(['q' => ['nullable', 'string', 'max:100']]);
+        $search = trim($validated['q'] ?? '');
+        $products = Baju::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('nama_baju', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%")
+                        ->orWhere('kategori', 'like', "%{$search}%")
+                        ->orWhere('ukuran', 'like', "%{$search}%")
+                        ->orWhere('warna', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('utama.new', compact('products', 'search'));
+    }
+
+    public function show(Baju $product): View
+    {
+        return view('utama.detail-produk', [
+            'product' => $product,
+            'sizes' => $this->options($product->ukuran, ['S', 'M', 'L', 'XL']),
+            'colors' => $this->options($product->warna, ['Grey', 'Black', 'White']),
+        ]);
+    }
+
+    public function addToCart(Request $request, Baju $product): RedirectResponse
+    {
         $validated = $request->validate([
-            'size' => ['required', 'string', 'in:S,M,L,XL'],
-            'color' => ['required', 'string', 'in:Grey,Black,White'],
+            'size' => ['required', 'string', Rule::in($this->options($product->ukuran, ['S', 'M', 'L', 'XL']))],
+            'color' => ['required', 'string', Rule::in($this->options($product->warna, ['Grey', 'Black', 'White']))],
             'quantity' => ['required', 'integer', 'min:1', 'max:10'],
         ]);
-
         $cart = $request->session()->get('cart', []);
+        $productData = [
+            'id' => $product->getRouteKey(),
+            'name' => $product->nama_baju,
+            'price' => (float) $product->harga,
+            'image' => $product->gambar_url,
+        ];
         $cartKey = implode(':', [$productData['id'], $validated['size'], $validated['color']]);
 
         if (isset($cart[$cartKey])) {
             $cart[$cartKey]['quantity'] = min(10, $cart[$cartKey]['quantity'] + $validated['quantity']);
         } else {
             $cart[$cartKey] = [
-                ...Arr::only($productData, ['id', 'name', 'price', 'image']),
+                ...$productData,
                 'size' => $validated['size'],
                 'color' => $validated['color'],
                 'quantity' => $validated['quantity'],
@@ -66,48 +101,10 @@ class ProductController extends Controller
         return redirect()->route('home')->with('status', 'Pesanan berhasil dibuat.');
     }
 
-    private function findProduct(string $product): array
+    private function options(?string $value, array $fallback): array
     {
-        $products = [
-            'poptart-jersey' => [
-                'id' => 'poptart-jersey',
-                'name' => 'Faith Industry "Poptart" Family Jersey',
-                'price' => 700000,
-                'image' => 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85',
-                'description' => 'Jersey relaxed fit dengan detail sporty dan material ringan untuk aktivitas harian.',
-            ],
-            'classic-tee' => [
-                'id' => 'classic-tee',
-                'name' => 'Classic Crew Tee',
-                'price' => 120000,
-                'image' => 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=900&q=85',
-                'description' => 'T-shirt klasik dengan potongan clean dan material nyaman untuk dipakai setiap hari.',
-            ],
-            'essential-shirt' => [
-                'id' => 'essential-shirt',
-                'name' => 'Essential Overshirt',
-                'price' => 100000,
-                'image' => 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=85',
-                'description' => 'Overshirt versatile dengan siluet relaxed untuk layering yang mudah.',
-            ],
-            'daily-jacket' => [
-                'id' => 'daily-jacket',
-                'name' => 'Daily Utility Jacket',
-                'price' => 100000,
-                'image' => 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=900&q=85',
-                'description' => 'Jaket utility dengan potongan boxy dan detail fungsional untuk aktivitas harian.',
-            ],
-            'studio-top' => [
-                'id' => 'studio-top',
-                'name' => 'Studio Knit Top',
-                'price' => 100000,
-                'image' => 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85',
-                'description' => 'Knit top minimal dengan tekstur lembut dan siluet yang mudah dipadukan.',
-            ],
-        ];
+        $options = array_filter(array_map('trim', preg_split('/[,;|\/]+/', $value ?? '') ?: []));
 
-        abort_unless(isset($products[$product]), 404);
-
-        return $products[$product];
+        return $options === [] ? $fallback : array_values(array_unique($options));
     }
 }

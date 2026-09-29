@@ -1,6 +1,6 @@
 @extends('utama.layout')
 
-@section('title', 'FTH | ' . $product['name'])
+@section('title', 'FTH | ' . $product->nama_baju)
 
 @section('content')
     <main class="bg-white px-5 py-10 sm:px-10 lg:px-16 lg:py-14">
@@ -14,24 +14,28 @@
             <div class="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
                 <section>
                     <div class="aspect-[4/5] overflow-hidden bg-neutral-100">
-                        <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}" class="h-full w-full object-cover grayscale-[8%]">
+                        @if ($product->gambar_url)
+                            <img src="{{ $product->gambar_url }}" alt="{{ $product->nama_baju }}" class="h-full w-full object-cover">
+                        @else
+                            <div class="flex h-full items-center justify-center text-6xl font-light text-neutral-400">{{ mb_substr($product->nama_baju, 0, 1) }}</div>
+                        @endif
                     </div>
                 </section>
 
                 <section class="lg:pt-2">
                     <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-neutral-500">FTH New Arrivals</p>
-                    <h1 class="mt-3 max-w-lg text-3xl font-semibold leading-tight tracking-[-0.06em] text-neutral-950 sm:text-4xl">{{ $product['name'] }}</h1>
-                    <p class="mt-4 text-lg font-semibold text-neutral-950">Rp {{ number_format($product['price'], 0, ',', '.') }}</p>
-                    <p class="mt-6 max-w-lg text-sm leading-7 text-neutral-600">{{ $product['description'] }}</p>
+                    <h1 class="mt-3 max-w-lg text-3xl font-semibold leading-tight tracking-[-0.06em] text-neutral-950 sm:text-4xl">{{ $product->nama_baju }}</h1>
+                    <p class="mt-4 text-lg font-semibold text-neutral-950">Rp {{ number_format($product->harga, 0, ',', '.') }}</p>
+                    <p class="mt-6 max-w-lg text-sm leading-7 text-neutral-600">{{ $product->deskripsi }}</p>
 
-                    <form action="{{ route('produk.keranjang', $product['id']) }}" method="POST" class="mt-8 border-t border-neutral-200 pt-7">
+                    <form action="{{ route('produk.keranjang', $product) }}" method="POST" class="mt-8 border-t border-neutral-200 pt-7">
                         @csrf
                         <fieldset>
                             <legend class="text-xs font-semibold uppercase tracking-[0.16em] text-neutral-900">Size</legend>
                             <div class="mt-3 flex flex-wrap gap-2">
-                                @foreach (['S', 'M', 'L', 'XL'] as $size)
+                                @foreach ($sizes as $size)
                                     <label>
-                                        <input type="radio" name="size" value="{{ $size }}" class="peer sr-only" {{ $size === 'M' ? 'checked' : '' }}>
+                                        <input type="radio" name="size" value="{{ $size }}" class="peer sr-only" {{ $loop->first ? 'checked' : '' }}>
                                         <span class="inline-flex h-10 min-w-10 cursor-pointer items-center justify-center border border-neutral-300 px-3 text-xs font-semibold text-neutral-700 transition peer-checked:border-neutral-950 peer-checked:bg-neutral-950 peer-checked:text-white">{{ $size }}</span>
                                     </label>
                                 @endforeach
@@ -41,10 +45,10 @@
                         <fieldset class="mt-7">
                             <legend class="text-xs font-semibold uppercase tracking-[0.16em] text-neutral-900">Color: <span data-color-label class="font-normal text-neutral-500">Grey</span></legend>
                             <div class="mt-3 flex items-center gap-4">
-                                @foreach ([['Grey', '#8b8b8b'], ['Black', '#111111'], ['White', '#ffffff']] as [$color, $hex])
+                                @foreach ($colors as $color)
                                     <label>
-                                        <input type="radio" name="color" value="{{ $color }}" class="peer sr-only" {{ $color === 'Grey' ? 'checked' : '' }}>
-                                        <span data-color-option="{{ $color }}" class="block h-7 w-7 cursor-pointer rounded-full border border-neutral-300 bg-[{{ $hex }}] ring-offset-2 transition peer-checked:border-neutral-950 peer-checked:ring-2 peer-checked:ring-neutral-950"></span>
+                                        <input type="radio" name="color" value="{{ $color }}" class="peer sr-only" {{ $loop->first ? 'checked' : '' }}>
+                                        <span data-color-option="{{ $color }}" class="inline-flex min-h-9 cursor-pointer items-center border border-neutral-300 px-3 text-xs text-neutral-700 ring-offset-2 transition peer-checked:border-neutral-950 peer-checked:bg-neutral-950 peer-checked:text-white peer-checked:ring-2 peer-checked:ring-neutral-950">{{ $color }}</span>
                                     </label>
                                 @endforeach
                             </div>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Baju extends Model
 {
@@ -29,6 +30,7 @@ class Baju extends Model
         'kategori',
         'ukuran',
         'warna',
+        'gambar',
     ];
 
     protected function casts(): array
@@ -37,5 +39,16 @@ class Baju extends Model
             'harga' => 'decimal:2',
             'stok' => 'integer',
         ];
+    }
+
+    public function getGambarUrlAttribute(): ?string
+    {
+        if (blank($this->gambar)) {
+            return null;
+        }
+
+        return filter_var($this->gambar, FILTER_VALIDATE_URL)
+            ? $this->gambar
+            : Storage::url($this->gambar);
     }
 }
