@@ -3,22 +3,74 @@ name: Deploy ke InfinityFree
 on:
   push:
     branches:
-      - main  # Ganti jadi master jika branch utama Anda 'master'
+      - main
 
 jobs:
   web-deploy:
-    name: Proses Upload Resmi git-ftp
+    name: Build dan deploy ke InfinityFree
     runs-on: ubuntu-latest
     steps:
-    - name: Ambil Code Terbaru dari GitHub
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout source
+        uses: actions/checkout@v4
 
-    - name: Install dan Jalankan git-ftp
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y git-ftp
-        
-        # Eksekusi langsung tanpa variabel env berlapis, menggunakan format url standar
-        git ftp init -f --user "${{ secrets.FTP_USERNAME }}" --passwd "${{ secrets.FTP_PASSWORD }}" --url "ftp://${{ secrets.FTP_SERVER }}/htdocs/" --insecure
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install production dependencies
+        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Build frontend assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Prepare InfinityFree package
+        run: |
+          mkdir -p deploy/laravel
+          rsync -a \
+            --exclude='/.git/' \
+            --exclude='/.github/' \
+            --exclude='/node_modules/' \
+            --exclude='/tests/' \
+            --exclude='/deploy/' \
+            --exclude='/.env' \
+            --exclude='/.env.*' \
+            --exclude='/storage/framework/cache/**' \
+            --exclude='/storage/framework/sessions/**' \
+            --exclude='/storage/framework/testing/**' \
+            --exclude='/storage/framework/views/**' \
+            --exclude='/storage/logs/**' \
+            ./ deploy/laravel/
+          cp -a public/. deploy/
+          sed -i \
+            -e "s#../storage/framework/maintenance.php#laravel/storage/framework/maintenance.php#" \
+            -e "s#../vendor/autoload.php#laravel/vendor/autoload.php#" \
+            -e "s#../bootstrap/app.php#laravel/bootstrap/app.php#" \
+            deploy/index.php
+          mkdir -p \
+            deploy/laravel/storage/framework/cache/data \
+            deploy/laravel/storage/framework/sessions \
+            deploy/laravel/storage/framework/testing \
+            deploy/laravel/storage/framework/views \
+            deploy/laravel/storage/logs
+          printf '%s\n' 'Require all denied' > deploy/laravel/.htaccess
+
+      - name: Upload files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          server-dir: /htdocs/
+          local-dir: ./deploy/
