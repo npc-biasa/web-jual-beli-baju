@@ -7,9 +7,12 @@
                     <div class="mb-6 flex items-end justify-between gap-4">
                         <div>
                             <p class="mb-1 text-[10px] uppercase tracking-[0.2em] text-neutral-500">Overview</p>
-                            <h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Store Analytics</h1>
+                            <h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Store Dashboard</h1>
                         </div>
-                        <p class="hidden text-right text-[11px] text-neutral-500 sm:block">Thursday, 27 August 2026</p>
+                        <a href="{{ route('admin.products.create') }}" class="inline-flex items-center gap-2 border border-neutral-950 bg-neutral-950 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-white hover:text-neutral-950">
+                            <span aria-hidden="true" class="text-base leading-none">+</span>
+                            New Product
+                        </a>
                     </div>
 
                     <section aria-label="Store metrics" class="mb-9 grid gap-3 sm:grid-cols-3">
@@ -74,7 +77,12 @@
                         </div>
                     </section>
 
-                    <section id="products" class="sr-only" aria-label="Products catalog">Products Catalog</section>
+                    <section id="products" class="mt-10" aria-labelledby="products-heading">
+                        <div class="mb-3 flex items-center justify-between gap-4">
+                            <h2 id="products-heading" class="text-sm font-semibold">Products</h2>
+                            <a href="{{ route('admin.products.index') }}" class="text-[11px] text-neutral-500 underline underline-offset-4 transition hover:text-neutral-950">Manage catalog</a>
+                        </div>
+                    </section>
                 </div>
             @endsection
       

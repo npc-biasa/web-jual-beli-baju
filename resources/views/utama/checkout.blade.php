@@ -1,140 +1,81 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FTH | Checkout</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="min-h-screen bg-white text-neutral-950 antialiased">
-    <header class="relative flex h-10 items-center border-b border-neutral-400 px-5 sm:px-10">
-        <a href="{{ url('/keranjang') }}" aria-label="Kembali ke keranjang" class="inline-flex h-6 w-6 items-center justify-center text-lg leading-none transition hover:opacity-50">←</a>
-        <a href="{{ url('/') }}" class="absolute left-1/2 -translate-x-1/2 text-[17px] font-black italic leading-none tracking-[-0.18em]">FTH.</a>
-    </header>
+@extends('utama.layout')
 
-    <main class="mx-auto grid max-w-[1120px] gap-12 px-6 py-12 sm:px-10 lg:grid-cols-[1fr_0.92fr] lg:gap-20 lg:px-12 lg:py-16">
+@section('title', 'Checkout | FTH')
+
+@section('content')
+    <main class="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-16 lg:py-14">
         <section>
-            <h1 class="text-[13px] font-semibold text-neutral-950">Address Details</h1>
-            <form id="checkout-form" action="{{ route('checkout.process') }}" method="POST" class="mt-4">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500">Account checkout</p>
+            <h1 class="mt-2 text-3xl font-semibold tracking-tight">Delivery details</h1>
+            <p class="mt-2 text-sm text-neutral-600">Pesanan akan dikaitkan dengan akun {{ $user->email }}.</p>
+
+            @if ($errors->any())
+                <div class="mt-5 border border-red-300 bg-red-50 px-4 py-3 text-xs text-red-800">
+                    <p class="font-semibold">Tidak dapat memproses checkout.</p>
+                    <ul class="mt-2 list-inside list-disc">
+                        @foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form id="checkout-form" action="{{ route('checkout.process') }}" method="POST" class="mt-7">
                 @csrf
-                <div class="space-y-3">
+                <div class="space-y-4">
                     <div>
-                        <label for="email" class="sr-only">Email</label>
-                        <input id="email" name="email" type="email" required placeholder="Email" class="h-8 w-full border border-neutral-500 bg-white px-2 text-[10px] text-neutral-900 outline-none placeholder:text-neutral-700 focus:border-black">
-                        <p class="mt-1 text-[8px] text-neutral-500">We will send your order details to your email</p>
+                        <label for="recipient_name" class="mb-2 block text-[10px] font-semibold uppercase tracking-[0.12em]">Recipient name</label>
+                        <input id="recipient_name" name="recipient_name" value="{{ old('recipient_name', $user->name) }}" autocomplete="name" required maxlength="255" class="w-full border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-neutral-950">
                     </div>
                     <div>
-                        <label for="recipient-name" class="sr-only">Recipient Full Name</label>
-                        <input id="recipient-name" name="recipient_name" type="text" required placeholder="Recipient Full Name" class="h-8 w-full border border-neutral-500 bg-white px-2 text-[10px] text-neutral-900 outline-none placeholder:text-neutral-700 focus:border-black">
+                        <label for="recipient_phone" class="mb-2 block text-[10px] font-semibold uppercase tracking-[0.12em]">Phone number</label>
+                        <input id="recipient_phone" name="recipient_phone" type="tel" value="{{ old('recipient_phone', $user->phone) }}" autocomplete="tel" required maxlength="30" class="w-full border border-neutral-300 px-3 py-3 text-sm outline-none focus:border-neutral-950">
                     </div>
                     <div>
-                        <label for="recipient-phone" class="sr-only">Recipient Phone number</label>
-                        <input id="recipient-phone" name="recipient_phone" type="tel" required placeholder="Recipient Phone number" class="h-8 w-full border border-neutral-500 bg-white px-2 text-[10px] text-neutral-900 outline-none placeholder:text-neutral-700 focus:border-black">
+                        <label for="address" class="mb-2 block text-[10px] font-semibold uppercase tracking-[0.12em]">Delivery address</label>
+                        <textarea id="address" name="address" rows="4" autocomplete="street-address" required maxlength="2000" class="w-full border border-neutral-300 px-3 py-3 text-sm leading-6 outline-none focus:border-neutral-950">{{ old('address', $user->address) }}</textarea>
                     </div>
                 </div>
 
-                <h2 class="mt-7 text-[13px] font-semibold text-neutral-950">Payment Method</h2>
-                <button type="button" data-payment-toggle aria-expanded="false" class="mt-4 flex h-9 w-full items-center justify-between border border-neutral-500 bg-white px-2 text-[10px] transition hover:border-black">
-                    <span class="flex items-center gap-2">
-                        <span data-payment-icon class="inline-flex h-5 w-5 items-center justify-center bg-[#102b68] text-[7px] font-bold text-white">M</span>
-                    </span>
-                    <span data-payment-label class="font-semibold">MANDIRI</span>
-                    <span class="text-base leading-none">›</span>
-                </button>
-                <div data-payment-options class="mt-2 hidden border border-neutral-300 bg-white">
-                    <button type="button" data-payment="MANDIRI" data-payment-icon-value="M" class="flex w-full items-center gap-3 border-b border-neutral-200 px-2 py-2 text-left text-[10px] hover:bg-neutral-50">
-                        <span class="inline-flex h-5 w-5 items-center justify-center bg-[#102b68] text-[7px] font-bold text-white">M</span> MANDIRI
-                    </button>
-                    <button type="button" data-payment="BCA" data-payment-icon-value="B" class="flex w-full items-center gap-3 border-b border-neutral-200 px-2 py-2 text-left text-[10px] hover:bg-neutral-50">
-                        <span class="inline-flex h-5 w-5 items-center justify-center bg-[#0b4ea2] text-[7px] font-bold text-white">B</span> BCA
-                    </button>
-                    <button type="button" data-payment="BNI" data-payment-icon-value="B" class="flex w-full items-center gap-3 border-b border-neutral-200 px-2 py-2 text-left text-[10px] hover:bg-neutral-50">
-                        <span class="inline-flex h-5 w-5 items-center justify-center bg-[#f58220] text-[7px] font-bold text-white">B</span> BNI
-                    </button>
-                    <button type="button" data-payment="COD" data-payment-icon-value="C" class="flex w-full items-center gap-3 px-2 py-2 text-left text-[10px] hover:bg-neutral-50">
-                        <span class="inline-flex h-5 w-5 items-center justify-center bg-neutral-900 text-[7px] font-bold text-white">C</span> CASH ON DELIVERY
-                    </button>
-                </div>
+                <fieldset class="mt-8">
+                    <legend class="text-xs font-semibold uppercase tracking-[0.14em]">Payment method</legend>
+                    <div class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                        @foreach (['MANDIRI', 'BCA', 'BNI', 'COD'] as $method)
+                            <label>
+                                <input type="radio" name="payment_method" value="{{ $method }}" class="peer sr-only" {{ old('payment_method', 'MANDIRI') === $method ? 'checked' : '' }}>
+                                <span class="flex min-h-11 cursor-pointer items-center justify-center border border-neutral-300 px-3 text-[10px] font-semibold peer-checked:border-neutral-950 peer-checked:bg-neutral-950 peer-checked:text-white">{{ $method }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </fieldset>
             </form>
         </section>
 
-        <aside>
-            <div class="border border-neutral-500 p-3 sm:p-4">
-                <div class="flex gap-3">
-                    <div class="h-14 w-14 shrink-0 overflow-hidden bg-neutral-100">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=180&q=80" alt="Faith Industry The King is Here Grey Cropped Sleeve T-Shirt" class="h-full w-full object-cover grayscale">
-                    </div>
-                    <div class="min-w-0 flex-1 text-[8px] leading-tight text-neutral-800">
-                        <div class="flex justify-between gap-3">
-                            <p>Faith Industries "The King is Here" Grey Cropped Sleeve T-Shirt</p>
-                            <span class="shrink-0 text-neutral-400">Rp100.000</span>
+        <aside class="h-fit border border-neutral-300 p-4 sm:p-6 lg:sticky lg:top-6">
+            <h2 class="border-b border-neutral-200 pb-4 text-sm font-semibold">Order summary ({{ count($cartItems) }})</h2>
+            <div class="divide-y divide-neutral-200">
+                @foreach ($cartItems as $item)
+                    <article class="flex gap-3 py-4">
+                        <div class="flex h-16 w-14 shrink-0 items-center justify-center overflow-hidden bg-neutral-100">
+                            @if ($item['image'])
+                                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="h-full w-full object-cover">
+                            @else
+                                <span class="text-lg text-neutral-400">{{ mb_substr($item['name'], 0, 1) }}</span>
+                            @endif
                         </div>
-                        <p class="mt-1 text-[7px] text-neutral-400">QUANTITY: 1</p>
-                    </div>
-                </div>
-
-                <div class="mt-4 grid grid-cols-2 gap-3 border-t border-neutral-200 pt-3">
-                    <div>
-                        <p class="text-[8px] font-semibold uppercase tracking-[0.12em] text-neutral-500">Size</p>
-                        <p class="mt-2 inline-flex h-7 min-w-8 items-center justify-center border border-black bg-white px-2 text-[9px] font-semibold text-black">M</p>
-                    </div>
-                    <div>
-                        <p class="text-[8px] font-semibold uppercase tracking-[0.12em] text-neutral-500">Color</p>
-                        <div class="mt-2 flex items-center gap-2">
-                            <span aria-label="Warna Grey" class="h-6 w-6 rounded-full border-2 border-black bg-neutral-500 ring-1 ring-neutral-500 ring-offset-1"></span>
-                            <span class="text-[8px] font-semibold text-neutral-900">Grey</span>
+                        <div class="min-w-0 flex-1 text-xs">
+                            <h3 class="font-medium">{{ $item['name'] }}</h3>
+                            <p class="mt-1 text-[10px] text-neutral-500">Size {{ $item['size'] }} · {{ $item['color'] }} · Qty {{ $item['quantity'] }}</p>
+                            <p class="mt-2 font-semibold">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</p>
                         </div>
-                    </div>
-                </div>
-
-                <button type="button" class="mt-5 flex h-7 w-full items-center justify-between border border-neutral-500 px-2 text-[8px] text-neutral-400 transition hover:border-black hover:text-neutral-700">
-                    <span>Leave a message for delivery (Optional)</span>
-                    <span class="text-sm text-neutral-700">›</span>
-                </button>
-                <button type="button" class="mt-3 flex h-7 w-full items-center justify-between border border-neutral-500 px-2 text-[8px] text-neutral-400 transition hover:border-black hover:text-neutral-700">
-                    <span class="flex items-center gap-2"><span class="text-sm">♢</span> VOUCHER</span>
-                    <span class="text-sm text-neutral-700">›</span>
-                </button>
-                <label class="mt-2 flex items-center justify-between text-[8px] text-neutral-400">
-                    <span>USE LOYALTY POINT (0)</span>
-                    <input type="checkbox" class="h-3 w-3 rounded-none border-neutral-500 accent-black">
-                </label>
+                    </article>
+                @endforeach
             </div>
-
-            <div class="mt-3 space-y-2 px-8 text-[9px] text-neutral-800">
-                <div class="flex justify-between"><span>Subtotal · 1 items</span><span>Rp100.000</span></div>
-                <div class="flex justify-between"><span>Shipping</span><span>Rp30.000</span></div>
+            <div class="space-y-3 border-t border-neutral-200 pt-4 text-xs">
+                <div class="flex justify-between"><span>Subtotal</span><span>Rp {{ number_format($subtotal, 0, ',', '.') }}</span></div>
+                <div class="flex justify-between"><span>Shipping</span><span>Rp {{ number_format($shipping, 0, ',', '.') }}</span></div>
+                <div class="flex justify-between border-t border-neutral-200 pt-4 text-sm font-semibold"><span>Total</span><span>Rp {{ number_format($total, 0, ',', '.') }}</span></div>
             </div>
-            <div class="mt-3 flex justify-between border-t border-neutral-400 px-8 pt-3 text-[10px] font-semibold">
-                <span>Total Payment</span>
-                <span>Rp130.000</span>
-            </div>
-            <button type="submit" form="checkout-form" class="mt-6 h-9 w-full border border-black bg-black text-[10px] font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-neutral-700">Order Now</button>
+            <button type="submit" form="checkout-form" class="mt-5 w-full bg-neutral-950 px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-neutral-700">Place order</button>
+            <a href="{{ route('keranjang') }}" class="mt-4 block text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-neutral-500 underline underline-offset-4">Back to cart</a>
         </aside>
     </main>
-
-    <script>
-        const paymentToggle = document.querySelector('[data-payment-toggle]');
-        const paymentOptions = document.querySelector('[data-payment-options]');
-        const paymentLabel = document.querySelector('[data-payment-label]');
-        const paymentIcon = document.querySelector('[data-payment-icon]');
-
-        paymentToggle?.addEventListener('click', () => {
-            const isOpen = !paymentOptions.classList.contains('hidden');
-            paymentOptions.classList.toggle('hidden', isOpen);
-            paymentToggle.setAttribute('aria-expanded', String(!isOpen));
-        });
-
-        paymentOptions?.querySelectorAll('[data-payment]').forEach((option) => {
-            option.addEventListener('click', () => {
-                paymentLabel.textContent = option.dataset.payment;
-                paymentIcon.textContent = option.dataset.paymentIconValue;
-                paymentIcon.className = 'inline-flex h-5 w-5 items-center justify-center bg-neutral-900 text-[7px] font-bold text-white';
-                paymentOptions.classList.add('hidden');
-                paymentToggle.setAttribute('aria-expanded', 'false');
-            });
-        });
-
-    </script>
-</body>
-</html>
+@endsection

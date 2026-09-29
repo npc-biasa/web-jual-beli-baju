@@ -26,6 +26,8 @@ class detail_pesanan extends Model
         'id_baju',
         'kuantitas',
         'harga_satuan',
+        'ukuran',
+        'warna',
     ];
 
     protected function casts(): array

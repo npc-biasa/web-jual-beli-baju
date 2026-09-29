@@ -33,6 +33,9 @@ class pesanan extends Model
         'ongkos_kirim',
         'total_harga',
         'status_pesanan',
+        'recipient_name',
+        'recipient_phone',
+        'delivery_address',
     ];
 
     protected function casts(): array

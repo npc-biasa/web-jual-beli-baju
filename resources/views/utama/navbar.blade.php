@@ -12,7 +12,7 @@
         <a href="{{ route('new') }}" aria-label="Search products" title="Search products" class="transition hover:text-neutral-500">
             <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
         </a>
-        <a href="#account" aria-label="Account" class="transition hover:text-neutral-500">
+        <a href="{{ auth()->check() ? (auth()->user()->role === 'admin' ? route('admin.dashboard') : route('home')) : route('login') }}" aria-label="Account" title="{{ auth()->check() ? auth()->user()->name : 'Login' }}" class="transition hover:text-neutral-500">
             <svg aria-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
         </a>
         <a href="{{ url('/keranjang') }}" aria-label="Shopping bag" class="relative transition hover:text-neutral-500">
@@ -22,5 +22,11 @@
         <a href="{{ url('/checkout') }}" class="inline-flex items-center rounded-full bg-neutral-900 px-3 py-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-neutral-700 sm:px-4">
             Checkout
         </a>
+        @auth
+            <form action="{{ route('logout') }}" method="POST" class="hidden sm:block">
+                @csrf
+                <button type="submit" class="text-[9px] font-semibold uppercase tracking-[0.12em] text-neutral-500 hover:text-neutral-950">Logout</button>
+            </form>
+        @endauth
     </div>
 </header>

@@ -26,8 +26,15 @@
                     <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-neutral-500">FTH New Arrivals</p>
                     <h1 class="mt-3 max-w-lg text-3xl font-semibold leading-tight tracking-[-0.06em] text-neutral-950 sm:text-4xl">{{ $product->nama_baju }}</h1>
                     <p class="mt-4 text-lg font-semibold text-neutral-950">Rp {{ number_format($product->harga, 0, ',', '.') }}</p>
-                    <p class="mt-6 max-w-lg text-sm leading-7 text-neutral-600">{{ $product->deskripsi }}</p>
+                    <div class="mt-6 max-w-lg">
+                        <h2 class="text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-900">Deskripsi produk</h2>
+                        <p class="mt-2 whitespace-pre-line text-sm leading-7 text-neutral-600">{{ $product->deskripsi ?: 'Deskripsi produk belum ditambahkan.' }}</p>
+                    </div>
+                    <p class="mt-4 text-xs {{ $product->stok > 0 ? 'text-neutral-500' : 'font-semibold text-red-700' }}">
+                        {{ $product->stok > 0 ? 'Stok tersedia: '.$product->stok : 'Stok habis' }}
+                    </p>
 
+                    @if ($product->stok > 0)
                     <form action="{{ route('produk.keranjang', $product) }}" method="POST" class="mt-8 border-t border-neutral-200 pt-7">
                         @csrf
                         <fieldset>
@@ -43,7 +50,7 @@
                         </fieldset>
 
                         <fieldset class="mt-7">
-                            <legend class="text-xs font-semibold uppercase tracking-[0.16em] text-neutral-900">Color: <span data-color-label class="font-normal text-neutral-500">Grey</span></legend>
+                            <legend class="text-xs font-semibold uppercase tracking-[0.16em] text-neutral-900">Color: <span data-color-label class="font-normal text-neutral-500">{{ $colors[0] ?? '' }}</span></legend>
                             <div class="mt-3 flex items-center gap-4">
                                 @foreach ($colors as $color)
                                     <label>
@@ -63,6 +70,7 @@
                             Add to cart
                         </button>
                     </form>
+                    @endif
 
                     <div class="mt-8 border-t border-neutral-200 pt-6 text-xs leading-6 text-neutral-500">
                         <p>Free delivery for orders over Rp 500.000.</p>
